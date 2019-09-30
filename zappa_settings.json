@@ -1,0 +1,44 @@
+{
+    "dev": {
+        "aws_region": "",
+        "certificate_arn": "",
+        "domain": "",
+        "route53_enabled": "false",
+        "django_settings": "as.settings",
+        "project_name": "as-dev",
+        "memory_size": 1024,
+        "runtime": "python3.6",
+        "s3_bucket": "",
+        "aws_environment_variables": {
+            "SENDINBLUE_API_KEY": "",
+            "SECRET_KEY": "",
+            "DB_PASSWORD": "",
+            "DB_USER": "",
+            "DB_HOST": "",
+            "DB_PORT": "",
+            "EMAIL_HOST_PASSWORD": "",
+            "DEBUG": "",
+            "ALLOWED_HOSTS": "",
+            "EMAIL_SERVICE": "",
+            "AWS_S3_REGION_NAME": "",
+            "AWS_STORAGE_STATIC_BUCKET_NAME": "",
+            "AWS_STORAGE_MEDIA_BUCKET_NAME": "",
+            "AWS_S3_STATIC_CUSTOM_DOMAIN": "",
+            "AWS_S3_MEDIA_CUSTOM_DOMAIN": "",
+            "STATIC_URL": "",
+            "STATICFILES_STORAGE": "",
+            "MEDIA_URL": "",
+            "MEDIA_ROOT": "",
+            "DEFAULT_FILE_STORAGE": "",
+            "DEFAULT_FROM_EMAIL": "",
+            "ADMINS": "",
+            "SERVER_EMAIL": "",
+            "DATA_UPLOAD_MAX_MEMORY_SIZE": "",
+            "FILE_UPLOAD_MAX_MEMORY_SIZE": ""
+        },
+        "vpc_config" : {
+            "SubnetIds": [ "","" ],
+            "SecurityGroupIds": [ "" ]
+        }
+    }
+}
