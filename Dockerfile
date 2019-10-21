@@ -3,7 +3,7 @@ FROM lambci/lambda:build-python3.6
 LABEL maintainer="support@fjnr.ca"
 
 # Fancy prompt to remind you are in zappashell
-RUN echo 'export PS1="\[\e[36m\]blitz_shell>\[\e[m\] "' >> /root/.bashrc
+RUN echo 'export PS1="\[\e[36m\]as_shell>\[\e[m\] "' >> /root/.bashrc
 
 
 RUN mkdir -p /opt/project

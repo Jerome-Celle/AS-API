@@ -23,6 +23,8 @@ from django.views.generic import TemplateView
 from artsouterrain.apps.user.urls import urlpatterns as user_urls
 from artsouterrain.apps.user.views import FacebookLogin
 
+from artsouterrain.apps.artwork.urls import router as artwork_router
+
 
 class OptionalSlashDefaultRouter(DefaultRouter):
     """ Subclass of DefaultRouter to make the trailing slash optional """
@@ -34,6 +36,8 @@ class OptionalSlashDefaultRouter(DefaultRouter):
 
 # Create a router and register our viewsets with it.
 router = OptionalSlashDefaultRouter()
+
+router.registry.extend(artwork_router.registry)
 
 urlpatterns = [
     path(

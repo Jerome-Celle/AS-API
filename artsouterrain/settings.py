@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
 
     'artsouterrain.apps.user',
+    'artsouterrain.apps.artwork',
     'anymail',
     'corsheaders',
 ]
