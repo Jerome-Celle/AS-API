@@ -18,6 +18,10 @@ app_name = "artwork"
 router = OptionalSlashSimpleRouter()
 router.register('partner', views.PartnerViewSet)
 router.register('partner_type', views.PartnerTypeViewSet)
+router.register('place', views.PlaceViewSet)
+router.register('artist', views.ArtistViewSet)
+router.register('artwork_type', views.ArtworkTypeViewSet)
+router.register('artwork', views.ArtworkViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),  # includes router generated URL
