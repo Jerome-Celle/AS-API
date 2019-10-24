@@ -4,28 +4,35 @@ services:
 - docker
 python:
 - 3.6
-branches:
-  only:
-  - /.*/
 notifications:
   email:
     on_success: change
     on_failure: change
 before_install:
-  - python3 -c 'import os,sys; os.set_blocking(sys.stdout.fileno(), True)'
+- python3 -c 'import os,sys; os.set_blocking(sys.stdout.fileno(), True)'
 install:
-  - docker-compose build
-  - pip install -r requirements-dev.txt
+- docker-compose build
 before_script:
-  # We will run a postgres service into docker, so wee need to stop the postgres service
-  - sudo service postgresql stop
+- sudo service postgresql stop
 script:
-  - docker-compose run api coverage run manage.py test
-  - docker-compose run api pycodestyle --config=.pycodestylerc .
+- docker-compose run api coverage run manage.py test
+- docker-compose run api pycodestyle --config=.pycodestylerc .
 after_success:
-  - docker-compose run -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS api coveralls
-  - python utils/write_secure_env.py
-  - bash utils/deploy.sh
+- docker-compose run -e TRAVIS_JOB_ID -e TRAVIS_BRANCH -e TRAVIS api coveralls
+before_deploy:
+- chmod +x ./utils/deploy_dev.sh
+- python utils/write_secure_env.py
+deploy:
+- provider: script
+  script: "./utils/deploy_dev.sh"
+  skip_cleanup: true
+  on:
+    branch: develop
 env:
   global:
-    -SECRET
+  - secure: TRh/pk1XPZtN5wNX1vxzZiHBYvxQDuBYLkuULCpVo5NfvSfdvCTCKsrCIBNoVRKT6X0ZbjHdWYv1f3EMluIQCnCkyodz/iGaujxRFixtpTwG6YPTztSTEXMkwLjAuMV0M4rNkiK1XH98kT8clo16y7mXUkXFSAxLuPWjc07Uq3qezMed/3rCvL2TCphq4Lefdgm+t+AFU+I0k7Kisd62d0gn2NFQzL6bCBgOX02iEe2zCl9Y5EKu/OwqIKh2mvirVUK8up6CeoIhVEU1ti1XdgCXb7PRFu68rLe1IlYzURevfHPJGsTdbt2d+N2F0BtXA4toYwmZnPGYrt2f9K1LStOVPQPqtzKR5cPRC8oS3r+7F26LP7d0V04oR4t3mmapLDsofVcB+N8fIMe25ivZjqSGSW6NcwSY1bdoJD32kxT46QrTgCOYcGGwokLjoYDjQx6JoJSiUSUUdKjcCGSXWzSSHyxsGJnnHv2nFcZN30jiKN+uu1ZJzqTBfk2i6vu+ENk37u+JWFI431hEKBVJ1ABRAGImrWw380YPcDlwY2UQK9M8clu/QdXkfhEiS2GMVAsq0yEU2UI6pOBvOl59QGcftfNyGI2hNoMViAm+E/mGPy9iyqPZV0qx2L2KAkKu+5Z6mOsfBlbuyEr4CQgzas3SQzgujjFOKa3J45yiCH0=
+  - secure: EhQTDOdhc/5uCv8uJy44IKwM6WnVAeYDvPlJvFvJpD6UdwqOqxqVqv8IHo5mRhidOFWM6zsugoA6DYol3tusLxXFzGlcQbxPZjqOfaTe70hKMIVnzpiSv7D2nFpLrJWNmB1bdjxN7QPfTtoaf0wHU9dxDZUY2WOAUitjhnhx3Va+tx5YZhKrZToziNgDD1IryEWErWyakWx9xLaZeO48pL4I4mx81nSPj11IAur2uu1fSQokHu83DYTD3MKnk1MeUDk51jKjWdERwnT3DqQcEahI6FBQs0m07v51R5jOWeK0rOw6vqJzznbw1zbsubQ7xAiFFB/MBQPgkOW7/o4d2QCIMGo2Nzg2oesuHXX/FWESO1XHQYVIzGFl+/curoDQ7qz/O4TAQE+H0pD9D9yDA3t0Yo+1oW1sRSgaW+5GCaw42bubbDC5qON7gl75rqu9+jKTBryvvNP23LXoXidBvZwPhqs56mxfXXDqFEVP4UMGt0tirbsjjoIWOx4rDNIZ/rbL58oY2tjzPXzXcV1QHSEjJDUme08w3qFiYQ2U5e822/9ehUlBcsxo3TVRnDes9gGhWx8RlYOQUxgtyLS75QqGtMJTp8zXsNEPAju6Ps3femsuhc63WYAmw6SX68zDsrfvxzcJYpQX08N563QBFZmHL6Yql2+B5JCf9pVZh90=
+  - secure: LgRYy0dl4ZiexjdCK/tiEa3YLhDZ2xK5r3fc1W3cX5YzBnDxl8qnsJqZ278cKY0tf3c2ENhiidKQLUlHxbJ89yW+k3ahGHJe/cNBGFpHKXUBz5a0QAWHQSAaJCYyITx9aoaN91bbXKHj64qfSnSHnAtTfyNNK7G9x0Wnc5+gERpJ22XXSe9+9tEW+VDpe2o9OHxOvowavc3Maz/PQNQCHl8yxVzWzxCnDIF/PMP7PxWq2yULqtGnAXsFC5N0aFitaaXaa/0eYPLzo6A10FJcory/hjPj1PeN7kZqwE9iyJ7v3VLai0Z3nhKsXUAMTtE/rvY739+KpAsYji6j0kCH7x13Rh/DN2MfixoFI8ZfTvOLw7vrRVTUeMX+LdwjqiVsUUMPoEvu5DpZAPXmwLaPHU1xotbIPDJH0jbWaLj2iq+6RK0kGABho6HUV/2/RmZ7xEMo6r4/9fmFMrdqePQZBPgkSLFSjE/clXRQj2T08+j+5u0dNaHM+R+QaPizwQ2JHbJt67h8wYFJeUqBf5QLdXTN3+IL8EiBbT4UedhdcMJLQ25fSEFwZDlfnU6EiY0kc0A0inmTyLvgEP50D5KemZmN0fWBXSPm+Fv96c1ZX72q5GXoVH5+M+IeaAxiGDjc7vzTkr5uYs1Yu+iPqFCTXLiaAqjTmUQmCABfXZSu8p4=
+  - secure: MSTRsQjoDwebyHzEPy9dgHF1gvH5U1Jx84AULXoHFdQyl3LpFTMrPuQdJfwFCsi5BZST2TnXM9y/khbn0oeHM09LYCnAQZlkdJq8e0zHLzh49y/4/taT+yrrxe0h9iHLrWRLZJceXHlkFiOIg0IQI55VJ+ECN8CfMmBcSpp+bRguC7lBKG1772vQKtK48GTxmPq/+GfL7ufHOU9WhCOaNdurAIrI+THlAf0eHErp6pHQB4uE3vLkDdcj6ELKX1/Lp0nWoHTLgS3yYkp9REOMlTnMJDONAPhDy7OAFXXqRBXSC7o8wl0TQWtZ7c8I9JeSpSw9BZDleLFkWQykGrEDOYM9zsSrgG2YrYFC49Z9sdUgpQ+HQJ+dsQDmFJe08WKrOM39SKGMrD3s1hVVZ2lzEQ+7DpD/axL3ILH+IeUyfWepMog2W812rZK4zBg2i2JDnHeJ2AfeeHv37i+ZhvaXrv2zQaMxOF3VL3G7qHaKEVscP/lswXZKPQzaRJSK3FP1nOnkWJ7XAb6eN5nl3gOC+GKlCYwCC8isk3+OHzVeBb8lUmuwO9Yu6+O1FFUGYLF6TQyIzaosbCDf4xVuoN0/f9z425FmNaG1cXamw5Ew4wKxWvHrMprloq2S9k23dae9R4xGEZ+S5bs2Vgy+MWtsZyg4gk7jwvTqkoR9hAQDxlc=
+  - secure: mvZMgTOf21f9gfU4JiiSVZARJdN40ZIDokcjDw8NsjtO2c0ZZ6Z20Sn0t8Yft+MFlPDBqyEnF3rVM+50fqRf1pCoZeNpq+HR2qlyNWjFkTeqC/3rxdp6BhVrLYPbvwTtAkH8cIS+E4Pr63uPQi4N/4k+BpiMmsIejIiD7anab96TfQGJ0rrs4FJtaWIyVkynjvAj+wZbKKULveE3rjRw9mifrqb7ZSmQv+2aADVNzTGO62e/VnE8elSFnsObNZSCM8kXPjH4Vl0/kVhQ7El6f4dnEdibhSY6MpDqk5ZbMhQehD0pfNMlvLruK4HnnYNRIAPNquA/9Qh39lVuae7CS9Spaah6C4fXfoEzZh7XXQP7DegtMk24s7FEazf9RNOgOhlDHP5OoSF2/BWPnA3NOWTj66Xq5ZDL7JUS4dZrAmxcP5v7SUbkpor/SqMHISfVKxcZflD6xVZvNmnUof+f3m+v+eqD5h4haKRBxpNFrNlUcab51mnfTiUCq7jwvkn7A1WFHIOcOujsXmWGavWg+DYu/W7zHV9yBGT3BOJ0QxmPuDUojopZnUf1D4QqsK+7tvI2WBQmVAuPYjdgDli6eWff6LvAjZ69WXHUbgFoQRd3+QZn7Xx8B9gkmsYtTNN0YyqYYzZiLJfEicHnBXj+in4s/XqVcdO19NLOhatq+Sw=
+  - secure: EVWTFzJBXeMQ5Yj5LiQLngNlALDTXh4Dl4QncR86lRC1RYhThH7grzJPgLGip+oqXvf4I5LAebZlHW+aii9GdAKAHDpwJeyqrwG5KpBUx+HdWPSF0fePfj2XXaWPGuyqXVwd8qvGKCdT0/3lFt3tNK250BiplzkgCUDe9HT2DjTRYONrWi/ShXX+cqWFebcPoNN8BGekCgqSPyGoTAO1G+CAAVfcYbrRTDXGGU7agztfq6/9fZhiLNmEX4me+y7HHzAQigSGSLlfhEFo5udL3A7SNIj7vRxejYIE96SrXlcrA14JD+3pk3eTS+GzQLHunZmvwSL2ON9cCbL76QBQl0hNqdQx0jiOeDKjw93MHz9HXMw5XrK6QxB10mJhJi46TLQj6T3OpNyfb29svAbfXyapUFImQAzFPWRf9YEw8LaKO5WrB3zNOY+A4dVjzHnEBI0tw3oYt5WBRUYxlosd0WlE/oIVVyoHOw8pNQAKzTieun8Lrx6sZd71s7jp3uE2K0E5uwS5GHEZyHfFipAXbdChSVLn7noClezvq7Zz0iVss7m62CNSeWOxKnWDYUWyrDitHZt8TAbLmE5KvoNiiNVKcqy0TvHiINrk/vwML4O/j4mpUd2/AWySe0DZBlBJ3MageKbjku62VANlfVpeS6ufyZAjcASpmiCXRri/9wg=
